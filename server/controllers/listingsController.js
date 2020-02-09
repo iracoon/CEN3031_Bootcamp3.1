@@ -31,14 +31,17 @@ export const create = async (req, res) => {
 export const read = (req, res) => {
     /* send back the listing as json from the request */
     /* If the listing could _not_ be found, be sure to send back a response in the following format: {error: 'Some message that indicates an error'} */
+    if(req.listing === null){
+        res.send("listing could not be found.");
+    } else {
+        res.json(req.listing);
+    }
 };
 
 /* Update a listing - note the order in which this function is called by the router*/
 export const update = (req, res) => {
 
     const listing = req.listing;
-    console.log(listing);
-
     /* Replace the listings's properties with the new properties found in req.body */
 
     /*save the coordinates (located in req.results if there is an address property) */
@@ -72,5 +75,18 @@ export const list = (req, res) => {
         bind it to the request object as the property 'listing', 
         then finally call next
  */
-export const listingByID = (req, res, next, id) => {
+export const listingByID = (req, res, next) => {
+    if (req.params.listingId) {
+        Listing.findById(req.params.listingId, function (err, listing) {
+          if (err) {
+            req.listing = null;
+            next();
+            return;
+          }    
+          req.listing = listing;
+          next();
+        });
+      } else {
+        next();
+      }
 };

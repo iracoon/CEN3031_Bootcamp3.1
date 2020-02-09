@@ -11,17 +11,24 @@ const listingsRouter = express.Router();
 /* 
   These method calls are responsible for routing requests to the correct request handler.
   Take note that it is possible for different controller functions to handle requests to the same route.
- 
   Note: the listings variable above and the file it is connected to help you trace
  */
+
+ 
+const hello = (req, res, next)=>{ 
+  console.log("Time:",new Date());
+  next();
+}
+
+
 listingsRouter.get('/', listings.list);
 listingsRouter.post('/', getCoordinates, listings.create);
 
 /*
   The ':' specifies a URL parameter. 
  */
-listingsRouter.get('/:listingId', listings.read);
-listingsRouter.put('/:listingId', getCoordinates, listings.update);
-listingsRouter.delete('/:listingId', listings.remove);
+listingsRouter.get('/:listingId', listings.listingByID, listings.read);
+listingsRouter.put('/:listingId', listings.listingByID, getCoordinates, listings.update);
+listingsRouter.delete('/:listingId', listings.listingByID, listings.remove);
 
 export default listingsRouter;
