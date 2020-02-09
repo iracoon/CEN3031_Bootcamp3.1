@@ -35,14 +35,15 @@ export const read = (req, res) => {
 
 /* Update a listing - note the order in which this function is called by the router*/
 export const update = (req, res) => {
+
     const listing = req.listing;
+    console.log(listing);
 
     /* Replace the listings's properties with the new properties found in req.body */
 
     /*save the coordinates (located in req.results if there is an address property) */
 
     /* Save the listing */
-
 };
 
 /* Delete a listing */
@@ -54,6 +55,14 @@ export const remove = (req, res) => {
 /* Retreive all the directory listings, sorted alphabetically by listing code */
 export const list = (req, res) => {
     /* Add your code. Make sure to send the documents as a JSON response.*/
+    Listing.find()
+    .then(listings => {
+        res.json(listings);
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving listings."
+        });
+    });
 };
 
 /* 

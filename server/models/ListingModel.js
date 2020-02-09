@@ -8,9 +8,14 @@ import mongoose from 'mongoose';
 const listingSchema = new mongoose.Schema({
   /* Your code for a schema here */
   //Check out - https://mongoosejs.com/docs/guide.html
+    code : {type: String, required: true},
+    name : {type: String, required: true},
+    coordinates: {latitude : mongoose.Number, longitude : mongoose.Number},
+    address : String
 });
 
 /* Use your schema to instantiate a Mongoose model
 Export the model to make it avaiable to other parts of your Node application */
 //Check out - https://mongoosejs.com/docs/guide.html#models
 export default mongoose.model('listings', listingSchema);
+
