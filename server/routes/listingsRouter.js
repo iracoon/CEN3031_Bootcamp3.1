@@ -14,13 +14,6 @@ const listingsRouter = express.Router();
   Note: the listings variable above and the file it is connected to help you trace
  */
 
- 
-const hello = (req, res, next)=>{ 
-  console.log("Time:",new Date());
-  next();
-}
-
-
 listingsRouter.get('/', listings.list);
 listingsRouter.post('/', getCoordinates, listings.create);
 
@@ -28,7 +21,7 @@ listingsRouter.post('/', getCoordinates, listings.create);
   The ':' specifies a URL parameter. 
  */
 listingsRouter.get('/:listingId', listings.listingByID, listings.read);
-listingsRouter.put('/:listingId', listings.listingByID, getCoordinates, listings.update);
-listingsRouter.delete('/:listingId', listings.listingByID, listings.remove);
+listingsRouter.put('/:listingId', getCoordinates, listings.listingByID, listings.update);
+listingsRouter.delete('/:listingId', listings.remove);
 
 export default listingsRouter;

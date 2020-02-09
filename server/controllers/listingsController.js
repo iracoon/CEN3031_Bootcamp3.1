@@ -25,23 +25,61 @@ export const create = async (req, res) => {
     /* Instantiate a Listing */
     /* save the coordinates from the coordinatesController (located in req.results if there is an address property) */
     /* Then save the listing to the database */
+    let listing = new Listing();
+    listing.code = req.body.code;
+    listing.name = req.body.name;
+
+    if(req.body.address){
+        listing.address = req.body.address;
+        if(req.results != null){
+            listing.coordinates.latitude = req.results.lat;
+            listing.coordinates.longitude = req.results.lng;
+        }
+    }
+
+    listing.save(function (err, Listing) {
+        if(err){
+            res.send(err);
+        } else {
+            res.json(Listing);
+        }
+    });
 };
 
 /* Show the current listing */
 export const read = (req, res) => {
     /* send back the listing as json from the request */
     /* If the listing could _not_ be found, be sure to send back a response in the following format: {error: 'Some message that indicates an error'} */
-    if(req.listing === null){
+    if(req.item === null){
         res.send("listing could not be found.");
     } else {
-        res.json(req.listing);
+        res.json(req.item);
     }
 };
 
 /* Update a listing - note the order in which this function is called by the router*/
 export const update = (req, res) => {
 
-    const listing = req.listing;
+    const listing = req.item;
+
+    listing.code = req.body.code;
+    listing.name = req.body.name;
+
+    if(req.body.address){
+        listing.address = req.body.address;
+        if(req.results != null){
+            listing.coordinates.latitude = req.results.lat;
+            listing.coordinates.longitude = req.results.lng;
+        }
+    }
+
+    listing.save(function (err, Listing) {
+        if(err){
+            res.send(err);
+        } else {
+            res.json(Listing);
+        }
+    });
     /* Replace the listings's properties with the new properties found in req.body */
 
     /*save the coordinates (located in req.results if there is an address property) */
@@ -53,12 +91,18 @@ export const update = (req, res) => {
 export const remove = (req, res) => {
     /* Add your code to remove the listins */
     /* If the listing could _not_ be found, be sure to send back a response in the following format: {error: 'Some message that indicates an error'} */
+    Listing.find({
+        id: req.params.listingId}).remove( function (err, Listing) {
+        if (err)
+            res.send("listing could not removed");
+    res.send(Listing);
+    });
 };
 
 /* Retreive all the directory listings, sorted alphabetically by listing code */
 export const list = (req, res) => {
     /* Add your code. Make sure to send the documents as a JSON response.*/
-    Listing.find()
+    Listing.find().sort({code: 1})
     .then(listings => {
         res.json(listings);
     }).catch(err => {
@@ -79,11 +123,11 @@ export const listingByID = (req, res, next) => {
     if (req.params.listingId) {
         Listing.findById(req.params.listingId, function (err, listing) {
           if (err) {
-            req.listing = null;
+            req.item = null;
             next();
             return;
           }    
-          req.listing = listing;
+          req.item = listing;
           next();
         });
       } else {
